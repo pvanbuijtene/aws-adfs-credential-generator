@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AwsAdfsCredentialGenerator.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AdfsUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://YOURSERVER.com/adfs/ls/IdpInitiatedSignOn.aspx</Value>
+    </Setting>
+    <Setting Name="LoginToRP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">urn:amazon:webservices</Value>
+    </Setting>
+    <Setting Name="Username" Type="System.String" Scope="User">
+      <Value Profile="(Default)">user@domain</Value>
+    </Setting>
+    <Setting Name="SamlProviderName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">&lt;Retrieve from AWS IAM console&gt;</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
