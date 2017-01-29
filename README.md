@@ -8,11 +8,11 @@ this tool is designed for less technically inclined folk who need tooling/API ac
 
 Here is a screen shot with typical settings showing the profiles (aka 'Roles') for the given user: 
 
-![screen_shot](screenshot.png)
+![screen_shot](docs/screenshot.png)
 
 Here is a screen shot of [S3Browser](http://s3browser.com/) using the generated credential file and one of the profiles:
 
-![screen_shot_s3browser](screenshot_s3browser.png)
+![screen_shot_s3browser](docs/screenshot_s3browser.png)
 
 ### How it works
 

@@ -10,6 +10,7 @@
     using System.Text;
     using System.Windows.Forms;
     using System.Xml.Linq;
+    using Amazon.Runtime;
     using Amazon.SecurityToken;
     using Amazon.SecurityToken.Model;
     using AngleSharp.Dom.Html;
@@ -139,10 +140,9 @@
                     log($"  {role}");
                 }
 
-
                 // For each role, call AWS AssumeRoleWithSAML and thus create 
                 // temporary credentials.
-                var stsClient = new AmazonSecurityTokenServiceClient();
+                var stsClient = new AmazonSecurityTokenServiceClient(new AnonymousAWSCredentials());
                 var assumedRoles = new List<AssumeRoleWithSAMLResponse>();
                 foreach (var roleArn in roles)
                 {
@@ -155,7 +155,8 @@
                     {
                         SAMLAssertion = encodedSamlResponse,
                         PrincipalArn = $"arn:aws:iam::{account}:saml-provider/{samlProviderNameTextBox.Text}",
-                        RoleArn = roleArn
+                        RoleArn = roleArn,
+                        DurationSeconds = 3600
                     };
 
                     try
@@ -187,7 +188,10 @@
                     stringBuilder.AppendLine($"aws_session_token={assumedRole.Credentials.SessionToken}");
                     stringBuilder.AppendLine();
                 }
+                var credentialDirectory = Path.GetDirectoryName(credentialFilePathTextBox.Text);
+                Directory.CreateDirectory(credentialDirectory);
                 File.WriteAllText(credentialFilePathTextBox.Text, stringBuilder.ToString());
+                log($"Credentials written to {credentialFilePathTextBox.Text}");
             }
             catch (Exception ex)
             {
