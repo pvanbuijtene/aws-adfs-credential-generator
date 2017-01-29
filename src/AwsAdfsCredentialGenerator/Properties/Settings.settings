@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="AdfsUrl" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://YOURSERVER.com/adfs/ls/IdpInitiatedSignOn.aspx</Value>
+      <Value Profile="(Default)">https://&lt;yourserver&gt;/adfs/ls/IdpInitiatedSignOn.aspx</Value>
     </Setting>
     <Setting Name="LoginToRP" Type="System.String" Scope="User">
       <Value Profile="(Default)">urn:amazon:webservices</Value>

@@ -2,13 +2,13 @@
 
 var target      = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
-var buildDir    = Directory("./artifacts");
+var artifactsDir    = Directory("./artifacts");
 var solution    = "./src/AwsAdfsCredentialGenerator.sln";
 
 Task("Clean")
     .Does(() =>
 {
-    CleanDirectory(buildDir);
+    CleanDirectory(artifactsDir);
 });
 
 Task("Restore-NuGet-Packages")
@@ -32,8 +32,17 @@ Task("Build")
     MSBuild(solution, settings => settings.SetConfiguration(configuration));
 });
 
+Task("Zip")
+    .IsDependentOn("Build")
+    .Does(() =>
+{
+    var version = FileReadText("version.txt");
+    Zip("./src/AwsAdfsCredentialGenerator/bin/" + configuration,
+        "./artifacts/AwsAdfsCredentialGenerator." + version + ".zip");
+});
+
 Task("Default")
     .IsDependentOn("Update-Version")
-    .IsDependentOn("Build");
+    .IsDependentOn("Zip");
 
 RunTarget(target);

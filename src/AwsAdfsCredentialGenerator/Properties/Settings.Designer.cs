@@ -25,7 +25,7 @@ namespace AwsAdfsCredentialGenerator.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://YOURSERVER.com/adfs/ls/IdpInitiatedSignOn.aspx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://<yourserver>/adfs/ls/IdpInitiatedSignOn.aspx")]
         public string AdfsUrl {
             get {
                 return ((string)(this["AdfsUrl"]));
