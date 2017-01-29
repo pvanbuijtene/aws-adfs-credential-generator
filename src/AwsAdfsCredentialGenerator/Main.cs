@@ -67,6 +67,7 @@
             Action<string> log = m => logTextBox.AppendText($"{DateTime.Now}: {m} {Environment.NewLine}");
             try
             {
+                // Authenticate against ADFS with NTLM.
                 var endpoint = $"{adfsUrlTextBox.Text}?loginToRp={loginToRPTextBox.Text}";
 
                 var handler = new HttpClientHandler
@@ -89,10 +90,13 @@
                     throw new InvalidOperationException("Invalid ADFS Url. " +
                                                         $"Visit {endpoint} in your browser to verify.");
                 }
+                // Need to a second time for the Network Credentials to be send.
+                // Don't know why, but it works (and I saw firefox doing same). 
                 response = await client.GetAsync(response.RequestMessage.RequestUri);
                 response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
+                var body = await response.Content.ReadAsStringAsync(); 
 
+                // Get the base64 encoded SAML response from the respons body HTML.
                 var parser = new HtmlParser();
                 var htmlDocument = parser.Parse(body);
                 var form = htmlDocument.Forms[0];
@@ -108,8 +112,8 @@
 
                 log("...success.");
 
+                // Extract the status code and Role Attributes from the SAML response.
                 var samlResponse = Encoding.UTF8.GetString(Convert.FromBase64String(encodedSamlResponse));
-
                 XNamespace pr = "urn:oasis:names:tc:SAML:2.0:protocol";
                 XNamespace ast = "urn:oasis:names:tc:SAML:2.0:assertion";
                 var doc = XDocument.Parse(samlResponse);
@@ -135,8 +139,10 @@
                     log($"  {role}");
                 }
 
-                var stsClient = new AmazonSecurityTokenServiceClient();
 
+                // For each role, call AWS AssumeRoleWithSAML and thus create 
+                // temporary credentials.
+                var stsClient = new AmazonSecurityTokenServiceClient();
                 var assumedRoles = new List<AssumeRoleWithSAMLResponse>();
                 foreach (var roleArn in roles)
                 {
@@ -169,8 +175,8 @@
                     }
                 }
 
+                // Write the temporary credentials to a the credential file (ini format)
                 var stringBuilder = new StringBuilder();
-
                 foreach (var assumedRole in assumedRoles)
                 {
                     var profile = assumedRole.AssumedRoleUser.Arn.Split(':')[5].Split('/')[1];
@@ -181,7 +187,6 @@
                     stringBuilder.AppendLine($"aws_session_token={assumedRole.Credentials.SessionToken}");
                     stringBuilder.AppendLine();
                 }
-
                 File.WriteAllText(credentialFilePathTextBox.Text, stringBuilder.ToString());
             }
             catch (Exception ex)
